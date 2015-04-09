@@ -52,26 +52,30 @@
 
     };
 
-    this.get = function (keys) {
+    this.get = function (key) {
 
-        var k = keys,
-            v = null;
+        var isArr = Array.isArray(key),
+            items = this.isSimpleList ? elements : kvps;
 
-        if (Array.isArray(keys)) {
-            v = [];
-            for (var i = 0, j = keys.length; i < j; i++) {
-                v.push(kvps[keys[i]]);
+        if (isArr && key.length > 0) {
+            var v = [];
+            for (var i = 0, j = key.length; i < j; i++) {
+                v.push(items[key[i]]);
             }
             return v;
         } else {
-            v = kvps[k];
-            if (v) { return v; }
+            var k = isArr ? key[0] : key;
+            return items[k];
         }
     };
 
     this.elementAt = function (index) {
-        var k = keys[index];
-        if (k) { return kvps[k]; }
+        
+        if (this.isSimpleList) {
+            return elements[index];
+        } else {
+            return kvps[keys[index]]; }
+        }
     };
 
     this.index = function (element) {
