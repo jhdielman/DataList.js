@@ -70,11 +70,11 @@
     };
 
     this.elementAt = function (index) {
-        
+
         if (this.isSimpleList) {
             return elements[index];
         } else {
-            return kvps[keys[index]]; }
+            return kvps[keys[index]];
         }
     };
 
@@ -138,6 +138,7 @@
     //***********************************
     function init() {
 
+        options = options || {};
         options = extend(defaults, options);
 
         setKey(options.key);
@@ -157,9 +158,9 @@
     function setKey(key) {
 
         if (elements.length) {
-            var element = element[0];
+            var element = elements[0];
 
-            if (key && element[key]) { options.key = k; return; }
+            if (key && element[key]) { options.key = key; return; }
 
             console.warn('"' + key + '" is not a valid `key` for DataList');
 
