@@ -2,7 +2,7 @@
 
     var original = [],
         keys = [],
-        values = {},
+        kvps = {},
         defaults = {
             key: null,
             sortBy: null,
@@ -33,6 +33,14 @@
         get: function () { return elements; }
     });
 
+    Object.defineProperty(this, 'isEmpty', {
+        get: function () { return !!elements.length; }
+    });
+
+    Object.defineProperty(this, 'isSimpleList', {
+        get: function () { return !!options.key; }
+    });
+
     //***********************************
     // Public API
     //***********************************
@@ -44,25 +52,82 @@
 
     };
 
-    this.findByKey = function (key) {
+    this.get = function (keys) {
 
+        var k = keys,
+            v = null;
+
+        if (Array.isArray(keys)) {
+            v = [];
+            for (var i = 0, j = keys.length; i < j; i++) {
+                v.push(kvps[keys[i]]);
+            }
+            return v;
+        } else {
+            v = kvps[k];
+            if (v) { return v; }
+        }
     };
 
     this.elementAt = function (index) {
+        var k = keys[index];
+        if (k) { return kvps[k]; }
+    };
+
+    this.index = function (element) {
+        var i = null;
+        if (this.isSimpleList) {
+            i = elements.indexOf(element);
+        } else {
+            var k = element[options.key];
+            i = keys.indexOf(k);
+        }
+
+        if (i >= 0) { return i; }
+        else { return null; }
+    };
+
+    this.key = function (element) {
+        if (this.isSimpleList) {
+            return this.index(element);
+        } else {
+            return element[options.key];
+        }
+    };
+
+    this.add = function (elements) {
 
     };
 
-    this.getIndex = function (element) {
+    this.remove = function (elements) {
 
     };
 
-    this.getKey = function (element) {
+    this.contains = function (search, key) {
 
     };
 
-    this.addElement = function (element) {
+    this.hasKey = function (key) {
 
-    }
+    };
+
+    this.hasKeys = function (keys) {
+
+    };
+
+    this.hasValue = function (element) {
+
+    };
+
+    this.hasValues = function (elements) {
+
+    };
+
+    this.clear = function () {
+        elements = [];
+        keys = [];
+        kvps = {};
+    };
 
     //***********************************
     // Private functions
@@ -78,8 +143,8 @@
                 var element = elements[i];
                 original.push(element);
                 if (options.key && element[options.key]) {
-                    keys.push(options.key);
-                    values[options.key] = element;
+                    keys.push(element[options.key]);
+                    kvps[options.key] = element;
                 }
             }
         }
@@ -92,7 +157,7 @@
 
             if (key && element[key]) { options.key = k; return; }
 
-            console.warn('"' + key + '" is not a valid `key` for ' + this.toString());
+            console.warn('"' + key + '" is not a valid `key` for DataList');
 
             if (element['id']) { options.key = 'id'; return; }
             if (element['Id']) { options.key = 'Id'; return; }
