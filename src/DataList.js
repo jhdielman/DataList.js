@@ -34,11 +34,11 @@
     });
 
     Object.defineProperty(this, 'isEmpty', {
-        get: function () { return !!elements.length; }
+        get: function () { return !elements.length; }
     });
 
     Object.defineProperty(this, 'isSimpleList', {
-        get: function () { return !!options.key; }
+        get: function () { return !options.key; }
     });
 
     //***********************************
@@ -46,6 +46,20 @@
     //***********************************
     this.sort = function (by) {
 
+        if (this.isSimpleList) {
+            elements.sort();
+        } else {
+            by = by || options.key;
+            keys.sort(function (a, b) {
+                var val_a = kvps[a],
+                    val_b = kvps[b];
+                if (val_a[by] < val_b[by])
+                    return -1;
+                if (val_a[by] > val_b[by])
+                    return 1;
+                return 0;
+            });
+        }
     };
 
     this.find = function (by) {
@@ -148,8 +162,9 @@
                 var element = elements[i];
                 original.push(element);
                 if (options.key && element[options.key]) {
-                    keys.push(element[options.key]);
-                    kvps[options.key] = element;
+                    var k = element[options.key];
+                    keys.push(k);
+                    kvps[k] = element;
                 }
             }
         }
@@ -164,11 +179,23 @@
 
             console.warn('"' + key + '" is not a valid `key` for DataList');
 
-            if (element['id']) { options.key = 'id'; return; }
-            if (element['Id']) { options.key = 'Id'; return; }
-            if (element['ID']) { options.key = 'ID'; return; }
+            if (element['id']) {
+                options.key = 'id';
+                console.info('Setting `key` to "' + options.key + '"');
+                return;
+            }
+            if (element['Id']) {
+                options.key = 'Id';
+                console.info('Setting `key` to "' + options.key + '"');
+                return;
+            }
+            if (element['ID']) {
+                options.key = 'ID';
+                console.info('Setting `key` to "' + options.key + '"');
+                return;
+            }
 
-            console.info('Setting `key` to "' + options.key + '"');
+            
         }
     }
 
