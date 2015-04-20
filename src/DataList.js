@@ -51,12 +51,10 @@
         } else {
             by = by || options.key;
             keys.sort(function (a, b) {
-                var val_a = kvps[a],
-                    val_b = kvps[b];
-                if (val_a[by] < val_b[by])
-                    return -1;
-                if (val_a[by] > val_b[by])
-                    return 1;
+                var valA = kvps[a][by],
+                    valB = kvps[b][by];
+                if (valA < valB) { return -1; }
+                if (valA > valB) { return 1; }
                 return 0;
             });
         }
