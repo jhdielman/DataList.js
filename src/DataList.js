@@ -60,8 +60,21 @@
         }
     };
 
-    this.find = function (by) {
+    this.find = function (criteria) {
+        var v = [];
+        criteria = criteria || {};
 
+        if (this.isSimpleList) {
+            for (var i = 0, j = elements.length; i < j; i++) {
+                var element = elements[i];
+                
+            }
+        } else {
+            
+            for (var i = 0, j = elements.length; i < j; i++) {
+
+            }
+        }
     };
 
     this.get = function (key) {
@@ -171,30 +184,27 @@
     function setKey(key) {
 
         if (elements.length) {
-            var element = elements[0];
+            var element = elements[0],
+                defaultKeys = ['id', 'Id', 'ID'];
 
             if (key && element[key]) { options.key = key; return; }
 
             console.warn('"' + key + '" is not a valid `key` for DataList');
 
-            if (element['id']) {
-                options.key = 'id';
-                console.info('Setting `key` to "' + options.key + '"');
-                return;
+            for (var i = 0, j = defaultKeys.length; i < j; i++) {
+                var k = defaultKeys[i];
+                if (element[k]) {
+                    console.info('Setting `key` to "' + k + '"');
+                    options.key = k;
+                    return;
+                }
             }
-            if (element['Id']) {
-                options.key = 'Id';
-                console.info('Setting `key` to "' + options.key + '"');
-                return;
-            }
-            if (element['ID']) {
-                options.key = 'ID';
-                console.info('Setting `key` to "' + options.key + '"');
-                return;
-            }
-
-            
         }
+    }
+
+    function logKeySetting() {
+
+        
     }
 
     // Recursive object extend
